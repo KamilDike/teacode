@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { recruitmentChallengeAPI } from "@/api/recruitmentChallenge";
 import { Button, Container, InputGroup, Form } from "react-bootstrap";
 import Loading from "@/components/Loading";
-import UsersTable from "@/components/UsersTable";
+import ContactsTable from "@/components/ContactsTable";
 import Error from "@/components/Error";
 import { limitData } from "@/utils/limitData";
 import { goToTop } from "@/utils/goToTop";
-import { filterUsers } from "@/utils/filterUsers";
+import { filterContacts } from "@/utils/filterContacts";
 
 export default function Home() {
   const [data, setData] = useState([]);
@@ -35,8 +35,8 @@ export default function Home() {
     if (!searchText) return;
 
     const clear = setTimeout(() => {
-      const filteredUsers = filterUsers(searchText, data);
-      setFilteredData(filteredUsers);
+      const filteredContacts = filterContacts(searchText, data);
+      setFilteredData(filteredContacts);
     }, 500);
 
     return () => clearTimeout(clear);
@@ -100,7 +100,7 @@ export default function Home() {
                   onChange={(event) => handleSearch(event.target.value)}
                 />
               </InputGroup>
-              <UsersTable
+              <ContactsTable
                 data={limitedData}
                 checkedIds={checkedIds}
                 toggleId={toggleId}

@@ -2,16 +2,16 @@ import React from "react";
 import { Col, Form, Row } from "react-bootstrap";
 import Image from "next/image";
 import userImageFallback from "/public/user.png";
-import UserCol from "@/components/UserCol";
-import { IUser } from "@/interfaces/IUser";
+import ContactCol from "@/components/ContactCol";
+import { IContact } from "@/interfaces/IContact";
 
-interface UsersTableProps {
-  data: Array<IUser>;
+interface ContactsTableProps {
+  data: Array<IContact>;
   checkedIds: Map<string, string>;
   toggleId: (id: string, isChecked: boolean) => void;
 }
 
-const UsersTable = ({ data, checkedIds, toggleId }: UsersTableProps) => {
+const ContactsTable = ({ data, checkedIds, toggleId }: ContactsTableProps) => {
   return (
     <>
       {!data.length ? (
@@ -28,25 +28,25 @@ const UsersTable = ({ data, checkedIds, toggleId }: UsersTableProps) => {
               <Col sm={1}>
                 <Image
                   src={avatar || userImageFallback}
-                  alt="user's image"
+                  alt="contact's image"
                   width={50}
                   height={50}
                   priority
                 />
               </Col>
-              <UserCol>
+              <ContactCol>
                 <p className="m-0">{first_name}</p>
-              </UserCol>
-              <UserCol>
+              </ContactCol>
+              <ContactCol>
                 <p className="m-0">{last_name}</p>
-              </UserCol>
-              <UserCol className="d-flex align-items-center justify-content-center">
+              </ContactCol>
+              <ContactCol className="d-flex align-items-center justify-content-center">
                 <Form.Check
                   type="checkbox"
                   checked={isChecked}
                   readOnly={true}
                 />
-              </UserCol>
+              </ContactCol>
             </Row>
           );
         })
@@ -55,4 +55,4 @@ const UsersTable = ({ data, checkedIds, toggleId }: UsersTableProps) => {
   );
 };
 
-export default UsersTable;
+export default ContactsTable;
