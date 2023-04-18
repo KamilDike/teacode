@@ -2,17 +2,19 @@ import Head from "next/head";
 import styles from "@/styles/Home.module.css";
 import { useEffect, useState } from "react";
 import { recruitmentChallengeAPI } from "@/api/recruitmentChallenge";
-import { Container } from "react-bootstrap";
+import { Button, Container } from "react-bootstrap";
 import Loading from "@/components/Loading";
 import UsersTable from "@/components/UsersTable";
 import Error from "@/components/Error";
 import { limitData } from "@/utils/limitData";
+import { goToTop } from "@/utils/goToTop";
 
 export default function Home() {
   const [data, setData] = useState([]);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
+  const [checkedIds, setCheckedIds] = useState(new Map());
 
   useEffect(() => {
     recruitmentChallengeAPI()
@@ -26,8 +28,6 @@ export default function Home() {
     };
   }, []);
 
-  const limitedData = limitData(data, page);
-
   function loadMore() {
     if (limitData(data, page + 1).length === limitData(data, page).length)
       return;
@@ -39,6 +39,19 @@ export default function Home() {
       setPage((prevState) => prevState + 1);
     }
   }
+
+  function toggleId(id: string, isChecked: boolean) {
+    const newCheckedIds = new Map(checkedIds);
+    if (isChecked) {
+      newCheckedIds.delete(id);
+    } else {
+      newCheckedIds.set(id, id);
+    }
+    console.log(`selected ids: ${Array.from(newCheckedIds.keys()).toString()}`);
+    setCheckedIds(newCheckedIds);
+  }
+
+  const limitedData = limitData(data, page);
 
   return (
     <>
@@ -55,7 +68,19 @@ export default function Home() {
           ) : loading ? (
             <Loading />
           ) : (
-            <UsersTable data={limitedData} />
+            <UsersTable
+              data={limitedData}
+              checkedIds={checkedIds}
+              toggleId={toggleId}
+            />
+          )}
+          {page > 1 && (
+            <Button
+              className="position-fixed bottom-0 end-0 m-5"
+              onClick={goToTop}
+            >
+              Go to top
+            </Button>
           )}
         </Container>
       </main>

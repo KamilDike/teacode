@@ -7,33 +7,46 @@ import { IUser } from "@/interfaces/IUser";
 
 interface UsersTableProps {
   data: Array<IUser>;
+  checkedIds: Map<string, string>;
+  toggleId: (id: string, isChecked: boolean) => void;
 }
 
-const UsersTable = ({ data }: UsersTableProps) => {
+const UsersTable = ({ data, checkedIds, toggleId }: UsersTableProps) => {
   return (
     <>
-      {data.map(({ avatar, id, first_name, last_name }) => (
-        <Row key={id} className="mt-3 m-0">
-          <Col sm={1}>
-            <Image
-              src={avatar || userImageFallback}
-              alt="user's image"
-              width={50}
-              height={50}
-              priority
-            />
-          </Col>
-          <UserCol>
-            <p className="m-0">{first_name}</p>
-          </UserCol>
-          <UserCol>
-            <p className="m-0">{last_name}</p>
-          </UserCol>
-          <UserCol className="d-flex align-items-center justify-content-center">
-            <Form.Check type="checkbox" checked={true} />
-          </UserCol>
-        </Row>
-      ))}
+      {data.length ? (
+        data.map(({ avatar, id, first_name, last_name }) => {
+          const isChecked = checkedIds.has(id.toString());
+          return (
+            <Row key={id} className="mt-3 m-0">
+              <Col sm={1}>
+                <Image
+                  src={avatar || userImageFallback}
+                  alt="user's image"
+                  width={50}
+                  height={50}
+                  priority
+                />
+              </Col>
+              <UserCol>
+                <p className="m-0">{first_name}</p>
+              </UserCol>
+              <UserCol>
+                <p className="m-0">{last_name}</p>
+              </UserCol>
+              <UserCol className="d-flex align-items-center justify-content-center">
+                <Form.Check
+                  type="checkbox"
+                  checked={isChecked}
+                  onChange={() => toggleId(id.toString(), isChecked)}
+                />
+              </UserCol>
+            </Row>
+          );
+        })
+      ) : (
+        <p>No data</p>
+      )}
     </>
   );
 };
