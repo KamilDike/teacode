@@ -1,7 +1,24 @@
-import Head from 'next/head'
-import styles from '@/styles/Home.module.css'
+import Head from "next/head";
+import styles from "@/styles/Home.module.css";
+import { useEffect, useState } from "react";
+import { recruitmentChallengeAPI } from "@/api/recruitmentChallenge";
+import { Container } from "react-bootstrap";
+import Loading from "@/components/Loading";
+import UsersTable from "@/components/UsersTable";
+import Error from "@/components/Error";
 
 export default function Home() {
+  const [data, setData] = useState([]);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    recruitmentChallengeAPI()
+      .then(setData)
+      .catch(() => setError(true))
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
     <>
       <Head>
@@ -11,7 +28,16 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
+        <Container className="text-center my-3">
+          {error ? (
+            <Error />
+          ) : loading ? (
+            <Loading />
+          ) : (
+            <UsersTable data={data} />
+          )}
+        </Container>
       </main>
     </>
-  )
+  );
 }
