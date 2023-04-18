@@ -1,5 +1,5 @@
 import React from "react";
-import { Col, Form, Row } from "react-bootstrap";
+import { Form, Row } from "react-bootstrap";
 import Image from "next/image";
 import userImageFallback from "/public/user.png";
 import ContactCol from "@/components/ContactCol";
@@ -25,7 +25,7 @@ const ContactsTable = ({ data, checkedIds, toggleId }: ContactsTableProps) => {
               className="mt-3 m-0"
               onClick={() => toggleId(id.toString(), isChecked)}
             >
-              <Col sm={1}>
+              <ContactCol>
                 <Image
                   src={avatar || userImageFallback}
                   alt="contact's image"
@@ -33,14 +33,13 @@ const ContactsTable = ({ data, checkedIds, toggleId }: ContactsTableProps) => {
                   height={50}
                   priority
                 />
-              </Col>
-              <ContactCol>
-                <p className="m-0">{first_name}</p>
               </ContactCol>
               <ContactCol>
-                <p className="m-0">{last_name}</p>
+                <p className="m-0">
+                  {first_name} {last_name}
+                </p>
               </ContactCol>
-              <ContactCol className="d-flex align-items-center justify-content-center">
+              <ContactCol>
                 <Form.Check
                   type="checkbox"
                   checked={isChecked}
