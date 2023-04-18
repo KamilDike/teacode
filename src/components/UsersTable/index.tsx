@@ -41,7 +41,11 @@ const UsersTable = ({ data, checkedIds, toggleId }: UsersTableProps) => {
                 <p className="m-0">{last_name}</p>
               </UserCol>
               <UserCol className="d-flex align-items-center justify-content-center">
-                <Form.Check type="checkbox" checked={isChecked} />
+                <Form.Check
+                  type="checkbox"
+                  checked={isChecked}
+                  readOnly={true}
+                />
               </UserCol>
             </Row>
           );
