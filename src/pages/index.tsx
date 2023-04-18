@@ -32,6 +32,8 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    if (!searchText) return;
+
     const clear = setTimeout(() => {
       const filteredUsers = filterUsers(searchText, data);
       setFilteredData(filteredUsers);
@@ -41,7 +43,10 @@ export default function Home() {
   }, [searchText]);
 
   function loadMore() {
-    if (limitData(data, page + 1).length === limitData(data, page).length)
+    if (
+      limitData(data, page + 1).length === limitData(data, page).length &&
+      page > 1
+    )
       return;
 
     if (
@@ -68,7 +73,8 @@ export default function Home() {
     setPage(1);
   }
 
-  const limitedData = limitData(filteredData, page);
+  const actualData = !!searchText ? filteredData : data;
+  const limitedData = limitData(actualData, page);
 
   return (
     <>

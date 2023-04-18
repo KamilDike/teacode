@@ -20,7 +20,11 @@ const UsersTable = ({ data, checkedIds, toggleId }: UsersTableProps) => {
         data.map(({ avatar, id, first_name, last_name }) => {
           const isChecked = checkedIds.has(id.toString());
           return (
-            <Row key={id} className="mt-3 m-0">
+            <Row
+              key={id}
+              className="mt-3 m-0"
+              onClick={() => toggleId(id.toString(), isChecked)}
+            >
               <Col sm={1}>
                 <Image
                   src={avatar || userImageFallback}
@@ -37,11 +41,7 @@ const UsersTable = ({ data, checkedIds, toggleId }: UsersTableProps) => {
                 <p className="m-0">{last_name}</p>
               </UserCol>
               <UserCol className="d-flex align-items-center justify-content-center">
-                <Form.Check
-                  type="checkbox"
-                  checked={isChecked}
-                  onChange={() => toggleId(id.toString(), isChecked)}
-                />
+                <Form.Check type="checkbox" checked={isChecked} />
               </UserCol>
             </Row>
           );
