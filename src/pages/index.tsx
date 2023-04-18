@@ -2,12 +2,13 @@ import Head from "next/head";
 import styles from "@/styles/Home.module.css";
 import { useEffect, useState } from "react";
 import { recruitmentChallengeAPI } from "@/api/recruitmentChallenge";
-import { Button, Container } from "react-bootstrap";
+import { Button, Container, InputGroup, Form } from "react-bootstrap";
 import Loading from "@/components/Loading";
 import UsersTable from "@/components/UsersTable";
 import Error from "@/components/Error";
 import { limitData } from "@/utils/limitData";
 import { goToTop } from "@/utils/goToTop";
+import { filterUsers } from "@/utils/filterUsers";
 
 export default function Home() {
   const [data, setData] = useState([]);
@@ -15,6 +16,8 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [checkedIds, setCheckedIds] = useState(new Map());
+  const [searchText, setSearchText] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
 
   useEffect(() => {
     recruitmentChallengeAPI()
@@ -27,6 +30,15 @@ export default function Home() {
       window.removeEventListener("scroll", loadMore);
     };
   }, []);
+
+  useEffect(() => {
+    const clear = setTimeout(() => {
+      const filteredUsers = filterUsers(searchText, data);
+      setFilteredData(filteredUsers);
+    }, 500);
+
+    return () => clearTimeout(clear);
+  }, [searchText]);
 
   function loadMore() {
     if (limitData(data, page + 1).length === limitData(data, page).length)
@@ -51,7 +63,12 @@ export default function Home() {
     setCheckedIds(newCheckedIds);
   }
 
-  const limitedData = limitData(data, page);
+  function handleSearch(text: string) {
+    setSearchText(text);
+    setPage(1);
+  }
+
+  const limitedData = limitData(filteredData, page);
 
   return (
     <>
@@ -68,20 +85,28 @@ export default function Home() {
           ) : loading ? (
             <Loading />
           ) : (
-            <UsersTable
-              data={limitedData}
-              checkedIds={checkedIds}
-              toggleId={toggleId}
-            />
+            <>
+              <InputGroup>
+                <InputGroup.Text id="search">Search name</InputGroup.Text>
+                <Form.Control
+                  placeholder="type here"
+                  value={searchText}
+                  onChange={(event) => handleSearch(event.target.value)}
+                />
+              </InputGroup>
+              <UsersTable
+                data={limitedData}
+                checkedIds={checkedIds}
+                toggleId={toggleId}
+              />
+            </>
           )}
-          {page > 1 && (
-            <Button
-              className="position-fixed bottom-0 end-0 m-5"
-              onClick={goToTop}
-            >
-              Go to top
-            </Button>
-          )}
+          <Button
+            className="position-fixed bottom-0 end-0 m-5"
+            onClick={goToTop}
+          >
+            Go to top
+          </Button>
         </Container>
       </main>
     </>

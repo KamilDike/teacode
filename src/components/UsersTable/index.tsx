@@ -14,7 +14,9 @@ interface UsersTableProps {
 const UsersTable = ({ data, checkedIds, toggleId }: UsersTableProps) => {
   return (
     <>
-      {data.length ? (
+      {!data.length ? (
+        <p className="mt-3">No data</p>
+      ) : (
         data.map(({ avatar, id, first_name, last_name }) => {
           const isChecked = checkedIds.has(id.toString());
           return (
@@ -44,8 +46,6 @@ const UsersTable = ({ data, checkedIds, toggleId }: UsersTableProps) => {
             </Row>
           );
         })
-      ) : (
-        <p>No data</p>
       )}
     </>
   );
