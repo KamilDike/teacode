@@ -6,18 +6,39 @@ import { Container } from "react-bootstrap";
 import Loading from "@/components/Loading";
 import UsersTable from "@/components/UsersTable";
 import Error from "@/components/Error";
+import { limitData } from "@/utils/limitData";
 
 export default function Home() {
   const [data, setData] = useState([]);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     recruitmentChallengeAPI()
       .then(setData)
       .catch(() => setError(true))
       .finally(() => setLoading(false));
+
+    window.addEventListener("scroll", loadMore);
+    return () => {
+      window.removeEventListener("scroll", loadMore);
+    };
   }, []);
+
+  const limitedData = limitData(data, page);
+
+  function loadMore() {
+    if (limitData(data, page + 1).length === limitData(data, page).length)
+      return;
+
+    if (
+      window.innerHeight + document.documentElement.scrollTop ===
+      document.scrollingElement.scrollHeight
+    ) {
+      setPage((prevState) => prevState + 1);
+    }
+  }
 
   return (
     <>
@@ -34,7 +55,7 @@ export default function Home() {
           ) : loading ? (
             <Loading />
           ) : (
-            <UsersTable data={data} />
+            <UsersTable data={limitedData} />
           )}
         </Container>
       </main>
